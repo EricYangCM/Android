@@ -1,4 +1,6 @@
- private static final UUID BLUETOOTH_LE_FB301BC_S = UUID.fromString("0000FFF0-0000-1000-8000-00805F9B34FB");
+[SerialSocket.java]
+
+private static final UUID BLUETOOTH_LE_FB301BC_S = UUID.fromString("0000FFF0-0000-1000-8000-00805F9B34FB");
     private static final UUID BLUETOOTH_LE_FB301BC_SERIAL_READ = UUID.fromString("0000FFF2-0000-1000-8000-00805F9B34FB");
     private static final UUID BLUETOOTH_LE_FB301BC_SERIAL_WRITE = UUID.fromString("0000FFF1-0000-1000-8000-00805F9B34FB");
 
@@ -10,4 +12,49 @@
             writeCharacteristic = gattService.getCharacteristic(BLUETOOTH_LE_FB301BC_SERIAL_WRITE);
             return true;
         }
+    }
+
+
+
+
+private void connectCharacteristics1(BluetoothGatt gatt) {
+        boolean sync = true;
+        writePending = false;
+        for (BluetoothGattService gattService : gatt.getServices()) {
+            if (gattService.getUuid().equals(BLUETOOTH_LE_CC254X_SERVICE))
+                delegate = new Cc245XDelegate();
+            if (gattService.getUuid().equals(BLUETOOTH_LE_MICROCHIP_SERVICE))
+                delegate = new MicrochipDelegate();
+            if (gattService.getUuid().equals(BLUETOOTH_LE_NRF_SERVICE))
+                delegate = new NrfDelegate();
+            if (gattService.getUuid().equals(BLUETOOTH_LE_TIO_SERVICE))
+                delegate = new TelitDelegate();
+
+            if (gattService.getUuid().equals(BLUETOOTH_LE_FB301BC_S)) {
+
+                Log.e("abc", "yes");
+                delegate = new FB301BC();
+            }
+
+            Log.e("abc", "no");
+
+            if(delegate != null) {
+                sync = delegate.connectCharacteristics(gattService);
+
+                break;
+            }
+        }
+        if(canceled)
+            return;
+        if(delegate==null || readCharacteristic==null || writeCharacteristic==null) {
+            for (BluetoothGattService gattService : gatt.getServices()) {
+                Log.d(TAG, "service "+gattService.getUuid());
+                for(BluetoothGattCharacteristic characteristic : gattService.getCharacteristics())
+                    Log.d(TAG, "characteristic "+characteristic.getUuid());
+            }
+            onSerialConnectError(new IOException("no serial profile found"));
+            return;
+        }
+        if(sync)
+            connectCharacteristics2(gatt);
     }

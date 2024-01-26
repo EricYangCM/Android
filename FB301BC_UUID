@@ -1,0 +1,13 @@
+ private static final UUID BLUETOOTH_LE_FB301BC_S = UUID.fromString("0000FFF0-0000-1000-8000-00805F9B34FB");
+    private static final UUID BLUETOOTH_LE_FB301BC_SERIAL_READ = UUID.fromString("0000FFF2-0000-1000-8000-00805F9B34FB");
+    private static final UUID BLUETOOTH_LE_FB301BC_SERIAL_WRITE = UUID.fromString("0000FFF1-0000-1000-8000-00805F9B34FB");
+
+    private class FB301BC extends DeviceDelegate{
+        @Override
+        boolean connectCharacteristics(BluetoothGattService gattService) {
+            Log.e("abc", "service FB301BC");
+            readCharacteristic = gattService.getCharacteristic(BLUETOOTH_LE_FB301BC_SERIAL_READ);
+            writeCharacteristic = gattService.getCharacteristic(BLUETOOTH_LE_FB301BC_SERIAL_WRITE);
+            return true;
+        }
+    }

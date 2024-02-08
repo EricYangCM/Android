@@ -1,0 +1,70 @@
+package com.example.ble_test;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+[MainAvtivity]
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity {
+
+    private FragmentManager fragmentManager;
+    private Device_Search_Fragment DS_Frag;
+    private FragmentTransaction transaction;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+
+        fragmentManager = getSupportFragmentManager();
+
+        DS_Frag = new Device_Search_Fragment();
+
+        //transaction = fragmentManager.beginTransaction();
+        //transaction.replace(R.id.frame_test, DS_Frag).commitAllowingStateLoss();
+
+
+        Button btn_test = findViewById(R.id.Btn_Test);
+        btn_test.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.frame_test, DS_Frag).commitAllowingStateLoss();
+
+                Toast.makeText(MainActivity.this, "Test", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+}
+
+
+
+[Fragment Class] (Layout/xml required)
+package com.example.ble_test;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+public class Device_Search_Fragment extends Fragment {
+
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
+        return inflater.inflate(R.layout.devicesearch_layout, container, false);
+    }
+}
